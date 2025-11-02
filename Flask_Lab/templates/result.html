@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result - Iris Classifier</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .prediction {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: capitalize;
+        }
+        
+        .confidence {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+        
+        .input-summary {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .input-summary h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .input-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .input-item:last-child {
+            border-bottom: none;
+        }
+        
+        .input-label {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .input-value {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .probabilities {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .probabilities h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .prob-bar {
+            margin-bottom: 15px;
+        }
+        
+        .prob-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+        
+        .prob-name {
+            color: #333;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+        
+        .prob-value {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Prediction Result</h1>
+        
+        <div class="result-card">
+            <div class="icon">
+                {% if prediction.lower() == 'setosa' %}🌼
+                {% elif prediction.lower() == 'versicolor' %}🌺
+                {% else %}🌸
+                {% endif %}
+            </div>
+            <div class="prediction">{{ prediction }}</div>
+            <div class="confidence">Confidence: {{ confidence }}%</div>
+        </div>
+        
+        <div class="input-summary">
+            <h3>📊 Input Features</h3>
+            {% for feature, value in input_features.items() %}
+            <div class="input-item">
+                <span class="input-label">{{ feature }}</span>
+                <span class="input-value">{{ value }} cm</span>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="probabilities">
+            <h3>📈 Prediction Probabilities</h3>
+            {% for species, prob in probabilities.items() %}
+            <div class="prob-bar">
+                <div class="prob-label">
+                    <span class="prob-name">{{ species }}</span>
+                    <span class="prob-value">{{ prob }}%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ prob }}%"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="buttons">
+            <a href="/" class="btn btn-primary">🔄 New Prediction</a>
+            <a href="/about" class="btn btn-secondary">ℹ️ About</a>
+        </div>
+    </div>
+</body>
+</html>
